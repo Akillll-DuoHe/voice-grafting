@@ -1,0 +1,18 @@
+import {randomBytes} from 'node:crypto';
+import {existsSync,mkdirSync,writeFileSync} from 'node:fs';
+import {join,resolve} from 'node:path';
+const args=process.argv.slice(2),value=name=>{const i=args.indexOf(name);return i<0?undefined:args[i+1];};
+if(!value('--dir'))throw Error('Use --dir <your data directory> [--engine voxcpm2|indextts]');
+const engine=value('--engine')??'voxcpm2';
+if(!['voxcpm2','indextts'].includes(engine))throw Error('Choose voxcpm2 or indextts');
+const home=resolve(value('--dir')),publicConfig=join(home,'voice.local.json'),engineConfig=join(home,'backend.local.json');
+if(existsSync(publicConfig)||existsSync(engineConfig))throw Error('Existing voice configuration found; edit it in place instead of overwriting tokens');
+mkdirSync(home,{recursive:true});
+const token=()=>randomBytes(32).toString('hex'),backendToken=token();
+const inputDir=join(home,'incoming'),outputDir=join(home,'outputs');
+mkdirSync(inputDir,{recursive:true});mkdirSync(outputDir,{recursive:true});
+const backend={python:'EDIT_PYTHON_EXE',engine,repo:engine==='voxcpm2'?'EDIT_VOXCPM_REPO':'EDIT_INDEX_TTS_REPO',model_dir:engine==='voxcpm2'?'EDIT_VOXCPM2_MODEL_DIR':'EDIT_INDEX_TTS_MODEL_DIR',reference:'EDIT_YOUR_REFERENCE_WAV',asr_model_dir:'EDIT_WHISPER_MODEL_DIR',token:backendToken,input_dir:inputDir,character_id:'my_voice',reference_asset_id:'my_voice_v1',emotion_mode:'reference'};
+if(engine==='voxcpm2')Object.assign(backend,{voxcpm_repo:'EDIT_VOXCPM_SRC_DIRECTORY',reference_sha256:'EDIT_USING_set-reference_SCRIPT',cfg_value:1.5,auto_emotion:false,native_laughter:false,air_cleanup:true,air_cleanup_mode:'aligned_v2',output_rms_dbfs:-21,max_output_gain_db:6,output_peak_limit:.88});
+writeFileSync(engineConfig,JSON.stringify(backend,null,2),{flag:'wx',mode:0o600});
+writeFileSync(publicConfig,JSON.stringify({port:18933,token:token(),ffmpeg:'ffmpeg',maxSpeechChars:600,voices:{default:'active'},backend:{baseUrl:'http://127.0.0.1:18931',token:backendToken,inputDir,outputDir}},null,2),{flag:'wx',mode:0o600});
+console.log('Created '+engine+' private configurations in '+home+'. Fill EDIT_ paths and use scripts/set-reference.mjs; tokens are not printed.');

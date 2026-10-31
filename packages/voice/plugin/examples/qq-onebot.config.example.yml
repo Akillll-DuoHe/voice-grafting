@@ -1,0 +1,14 @@
+# For cheesehaqi/dsh-qq-onebot-bridge 0.7.8; substitute your own locally generated token.
+# This is a fragment for that plugin's config, NOT an instruction to enable a QQ account.
+sttEnabled: true
+# Current upstream source uses DSH speechToText, NOT its stale documented sttBaseUrl.
+# Keep DSH's native recognition provider, or explicitly enable the local voice
+# plugin's provideSpeechToTextFallback ONLY when no speechToText service exists.
+ttsEnabled: true
+ttsProvider: openai
+ttsBaseUrl: http://127.0.0.1:18933/v1
+ttsModel: local-tts
+ttsVoice: default
+ttsApiKey: PASTE_YOUR_LOCAL_VOICE_TOKEN
+# This upstream plugin currently emits text plus voice when ttsEnabled is true.
+# Persistent voice-only/text-only switching requires its own mode hook; the voice service cannot decide what it sends.

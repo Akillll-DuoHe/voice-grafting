@@ -1,0 +1,8 @@
+{
+  "python": "EDIT_YOUR_SEED_VC_PYTHON_EXE",
+  "repo": "EDIT_YOUR_SEED_VC_REPO",
+  "checkpoint": "EDIT_SEED_VC_44K_F0_CHECKPOINT_PTH",
+  "modelConfig": "EDIT_MATCHING_SEED_VC_CONFIG_YML",
+  "fp16": true,
+  "offline": false
+}

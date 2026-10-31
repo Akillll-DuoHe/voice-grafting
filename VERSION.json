@@ -1,0 +1,15 @@
+{
+  "project": "语音嫁接",
+  "baselineDate": "2026-11-01",
+  "components": {
+    "voice": {
+      "name": "@local/dsh-local-voice",
+      "version": "0.3.0"
+    },
+    "qq-bridge": {
+      "name": "dsh-qq-onebot-bridge",
+      "version": "0.8.0-offline.3"
+    }
+  },
+  "sharedSource": "shared/"
+}

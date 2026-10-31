@@ -1,0 +1,9 @@
+{
+  "base_url": "http://127.0.0.1:18933/v1",
+  "api_key": "PASTE_YOUR_OWN_LOCAL_VOICE_TOKEN",
+  "speech_model": "local-tts",
+  "speech_voice": "default",
+  "speech_format": "mp3",
+  "transcription_model": "local-asr",
+  "note": "Field names in the target plugin may differ. It must support a configurable speech/transcription endpoint."
+}

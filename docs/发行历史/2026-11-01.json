@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-01",
+  "unchangedArchives": true,
+  "archives": [
+    {
+      "name": "DSH-QQ-Bridge-Offline-0.8.0",
+      "archiveBytes": 76656109,
+      "uncompressedBytes": 133054268,
+      "files": 338,
+      "sha256": "563cb09b5eaf74433d29aeedabc1c5a0a5a9271617f67c58f5f8ff09a136de3a",
+      "zipCRCVerified": true,
+      "officialModelFilesVerified": 0,
+      "path": "发行包/2026-11-01/DSH-QQ-Bridge-Offline-0.8.0.zip"
+    },
+    {
+      "name": "DSH-Local-Voice-Offline-0.3.0",
+      "archiveBytes": 27565635136,
+      "uncompressedBytes": 30594723798,
+      "files": 75680,
+      "sha256": "e41275a504be72f9a819f4bec876adb104b8d0c253f4819c4c639ca7170b682b",
+      "zipCRCVerified": true,
+      "officialModelFilesVerified": 36,
+      "path": "发行包/2026-11-01/DSH-Local-Voice-Offline-0.3.0.zip"
+    }
+  ],
+  "validationProvenance": "Original completed delivery: full ZIP CRC, per-file SHA inventory, 36 official voice model/config hashes. Reorganization rechecks archive SHA and ZIP directory without running models."
+}

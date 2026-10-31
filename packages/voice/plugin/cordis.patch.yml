@@ -1,0 +1,5 @@
+- insert:
+    - id: dsh-local-voice
+      name: '@local/dsh-local-voice'
+      config:
+        configFileEnv: DSH_LOCAL_VOICE_CONFIG

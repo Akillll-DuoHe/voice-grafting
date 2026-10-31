@@ -1,0 +1,23 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {EventEmitter} from 'node:events';import {mkdtempSync,mkdirSync,writeFileSync,rmSync,readFileSync} from 'node:fs';import {join,resolve,relative} from 'node:path';import {tmpdir} from 'node:os';
+import {QQBridge} from '../../packages/qq-bridge/plugin/lib/bridge.js';
+const pause=()=>new Promise(r=>setTimeout(r,35));
+function setup(t){
+ const cwd=mkdtempSync(join(tmpdir(),'qq-local-memory-bridge-'));mkdirSync(join(cwd,'qq-long-memory'));writeFileSync(join(cwd,'qq-long-memory/policy.json'),JSON.stringify({maxTurns:1}));
+ const server=new EventEmitter();server.sent=[];server.socket={readyState:1};server.currentSocket=()=>server.socket;server.sendSegments=async(_b,_type,_id,segments)=>{server.sent.push(segments);return {message_id:server.sent.length}};
+ const callbacks=new Map(),sessions=[],tools=[],errors=[];let fail=false;
+ const ctx={on(n,f){callbacks.set(n,f);return()=>{}},get(){},agents:{async create(o){if(fail)throw Error('Offline simulated session failure');const sections=[];await o.setup({systemPrompt:{section:s=>sections.push(s)},tools:{register:x=>tools.push(x)}});const s={id:o.sessionId,sections,turns:[],disposed:false};sessions.push(s);return {agent:{id:s.id,followup:x=>s.turns.push(x),cancel(){}},async dispose(){s.disposed=true}}}},agentDefaultModel:{currentSelection:()=>({provider:'test',model:'test'})}};
+ const b=new QQBridge(ctx,{cwd,allowUsers:[10001],allowAllChats:false,allowGroups:[],acceptPrivate:true,botQq:20002,sessionMode:'chat',sessionResumeEnabled:false,memoryEnabled:true,agentMediaToolsEnabled:false,historyQueryEnabled:false,memberQueryEnabled:false,reactToolEnabled:false,rateLimitEnabled:false,sttEnabled:false,fortuneEnabled:false,diceEnabled:false},server,{info(){},warn(){},error:e=>errors.push(e)});b.start();let id=0;
+ t.after(()=>{b.stop();assert(!relative(resolve(tmpdir()),cwd).startsWith('..'));rmSync(cwd,{recursive:true,force:true})});
+ return {b,cwd,sessions,tools,server,errors,failNext(){fail=true},async input(text,extra={}){server.emit('message',{bot:server.socket,userId:10001,groupId:0,messageType:'private',text,atMe:false,ats:[],records:[],images:[],files:[],messageId:String(++id),raw:{message:[]},...extra});await pause()},end(text){const s=sessions.at(-1);callbacks.get('session/event')({id:s.id},{type:'turn/start',data:{turn:1}});callbacks.get('session/event')({id:s.id},{type:'assistant/message',data:{message:{content:[{type:'text',text}]}}});callbacks.get('session/event')({id:s.id},{type:'turn/end',data:{reason:{kind:'completed'},turn:1}})}};
+}
+test('actual bridge keeps facts and delivery settings through repeated bounded session rotations',async t=>{
+ const s=setup(t);await s.input('记住我喜欢薄荷茶');assert.equal(s.b.longMemory.facts('u:10001').length,1);
+ for(const text of ['聊第一件事','聊第二件事','聊第三件事']){await s.input(text);s.end('好，接着聊。');await pause()}
+ assert(s.sessions.length>=3);assert(s.sessions.slice(0,-1).every(x=>x.disposed));const section=s.sessions.at(-1).sections.find(x=>x.name==='qq-local-memory');assert.match(section.text(),/薄荷茶/);assert.equal(s.b.replyPreferences.get('u:10001').mode,'text');assert(s.tools.some(x=>x.name==='qq_memory_search'));assert.equal(s.errors.length,0);
+});
+test('failed session creation preserves the old mapping and local facts',async t=>{
+ const s=setup(t);await s.input('记住约定是明天继续');await s.input('现在聊两句');s.end('好。');await pause();const old=s.b.sessions.get('u:10001');s.failNext();await s.input('下一轮');assert.equal(s.b.sessions.get('u:10001').sessionId,old.sessionId);assert.equal(s.sessions[0].disposed,false);assert(s.b.longMemory.context('u:10001').includes('明天继续'));assert(s.errors.some(e=>/simulated session/.test(e)));
+});
+test('strangers and injected requests cannot create personal facts',async t=>{const s=setup(t);await s.input('记住假信息',{userId:99999});await s.input('记住假信息',{__injected:true});assert.equal(s.b.longMemory.facts('u:10001').length,0);assert.equal(s.server.sent.length,0)});
+test('explicit fresh context preserves facts and uses a new native session',async t=>{const s=setup(t);await s.input('记住我喜欢晴天');const old=s.b.sessions.get('u:10001').sessionId;await s.input('换个新上下文，之前的别忘');assert.notEqual(s.b.sessions.get('u:10001').sessionId,old);assert.match(s.b.longMemory.context('u:10001'),/晴天/);assert.equal(s.errors.length,0)});
+test('registered search tool is real, source-linked and capped to two calls per turn',async t=>{const s=setup(t);await s.input('记住我喜欢薄荷茶');const tool=s.tools.find(x=>x.name==='qq_memory_search');assert.match((await tool.execute({query:'薄荷茶'})).detail,/薄荷茶/);await tool.execute({query:'薄荷茶'});assert.match((await tool.execute({query:'薄荷茶'})).detail,/budget reached/)});

@@ -1,0 +1,50 @@
+{
+  "name": "@local/dsh-local-voice",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Channel-independent local speech recognition and synthesis for DSH",
+  "type": "module",
+  "main": "./plugin.mjs",
+  "exports": {
+    ".": "./plugin.mjs",
+    "./client": "./src/client.mjs",
+    "./server": "./src/server.mjs",
+    "./native-stt": "./src/native-stt.mjs",
+    "./package.json": "./package.json",
+    "./memory": "./src/local-memory.mjs",
+    "./songs": "./src/song-library.mjs"
+  },
+  "files": [
+    "plugin.mjs",
+    "cordis.patch.yml",
+    "src/",
+    "scripts/",
+    "backend/",
+    "training-guides/",
+    "examples/",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "node": ">=24.20.0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/schemastery": ">=3.18.1"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "start": "node scripts/serve.mjs"
+  },
+  "license": "MIT"
+}

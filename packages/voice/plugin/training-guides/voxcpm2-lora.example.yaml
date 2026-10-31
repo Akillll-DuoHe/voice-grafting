@@ -1,0 +1,33 @@
+# Copy to your own data directory and replace every EDIT_ value.
+# Starting configuration only; memory and convergence must be measured locally.
+pretrained_path: EDIT_YOUR_VOXCPM2_MODEL_DIRECTORY
+train_manifest: EDIT_DATASET_DIRECTORY/train.jsonl
+val_manifest: EDIT_DATASET_DIRECTORY/val.jsonl
+sample_rate: 16000
+out_sample_rate: 48000
+batch_size: 1
+grad_accum_steps: 8
+num_workers: 0
+preprocessing_num_workers: 1
+num_iters: 1000
+log_interval: 10
+valid_interval: 100
+save_interval: 100
+learning_rate: 0.0001
+weight_decay: 0.01
+warmup_steps: 100
+max_steps: 1000
+max_batch_tokens: 2048
+max_grad_norm: 1.0
+save_path: EDIT_YOUR_CHECKPOINT_DIRECTORY
+tensorboard: EDIT_YOUR_TRAINING_LOG_DIRECTORY
+lambdas:
+  loss/diff: 1.0
+  loss/stop: 1.0
+lora:
+  enable_lm: true
+  enable_dit: true
+  enable_proj: false
+  r: 32
+  alpha: 32
+  dropout: 0.0

@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-31T18:59:07.985640+00:00",
+  "fullSourceAndRuntimePrivateScan": true,
+  "privatePatternMatches": 0,
+  "personalDataIncluded": false,
+  "modelsInferenceFromThisRelease": "NOT_RUN",
+  "modelOrVoiceTraining": "NOT_RUN",
+  "otherComputerInstall": "NOT_RUN",
+  "freshDSHProfileOfflineInstall": true,
+  "realDSHSchemaLoad": true,
+  "portableDependencyImports": true,
+  "loopbackBackendStartupAndMP3Codec": false,
+  "memoryAndQQOfflineTestsPassed": 62,
+  "sourceSongSelectionRegressionPassed": true,
+  "userMustProvideOwnReferenceAndAccounts": true,
+  "knownLimits": [
+    "VoxCPM2 GPU inference, actual target-computer voice quality and training convergence require recipient testing.",
+    "Memory summarization is local extractive quoting; token accounting falls back to a conservative estimate.",
+    "Tencent QQ and DSH host programs and NVIDIA driver are installer prerequisites."
+  ]
+}

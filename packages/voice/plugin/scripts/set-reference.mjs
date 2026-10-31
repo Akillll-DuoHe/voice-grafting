@@ -1,0 +1,12 @@
+import {readFileSync,writeFileSync,copyFileSync,constants} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {resolve} from 'node:path';
+const args=process.argv.slice(2),value=name=>{const i=args.indexOf(name);return i<0?undefined:args[i+1];};
+if(!value('--config')||!value('--reference'))throw Error('Use --config backend.local.json --reference your-own-reference.wav');
+const configFile=resolve(value('--config')),reference=resolve(value('--reference')),bytes=readFileSync(reference);
+if(bytes.toString('ascii',0,4)!=='RIFF'||bytes.toString('ascii',8,12)!=='WAVE')throw Error('Provide a real WAV reference');
+const config=JSON.parse(readFileSync(configFile,'utf8').replace(/^\uFEFF/,''));
+const backup=configFile+'.backup-'+Date.now();copyFileSync(configFile,backup,constants.COPYFILE_EXCL);
+config.reference=reference;config.reference_sha256=createHash('sha256').update(bytes).digest('hex');
+writeFileSync(configFile,JSON.stringify(config,null,2),{mode:0o600});
+console.log('Reference registered; prior configuration backed up. Restart only your voice backend to load it.');

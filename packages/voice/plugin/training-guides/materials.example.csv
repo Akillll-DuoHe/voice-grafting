@@ -1,0 +1,4 @@
+audio,text,speaker,group,split
+clips/recording01_001.wav,这里填写第一条录音逐字说出的原话。,my_voice,recording01,train
+clips/recording01_002.wav,这里填写同一场录音另一段的原话。,my_voice,recording01,train
+clips/recording02_001.wav,这里填写另一场录音中保留验证的原话。,my_voice,recording02,val
