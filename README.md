@@ -2,6 +2,19 @@
 
 给 DeepSeek Harness（DSH）接入本地听说能力，并提供一个可独立使用的 QQ 桥。这里是后续修复、维护、构建发行包的源码仓。
 
+## 从这里开始：按顺序拿
+
+| 顺序 | 拿什么 | 在哪 | 大小 |
+| --- | --- | --- | --- |
+| 1 | 源码与文档（先读一遍） | [GitHub](https://github.com/Akillll-DuoHe/voice-grafting) ｜ [Gitee](https://gitee.com/Akillll-DuoHe/voice-grafting) | 约 3 MB |
+| 2 | 独立 QQ 桥离线包 | 两个仓的 Release 附件，或 [百度网盘](https://pan.baidu.com/s/1zmLT33KfniQLLPQwb5PScw)（提取码 `jjsz`） | 73 MB |
+| 3 | 通用声音包离线包 | [百度网盘](https://pan.baidu.com/s/17Z_d__P5ZQlKt63qBo5OXA)（提取码 `f9g2`） | 25.67 GB |
+
+- 声音包整包超过平台单文件上限（GitHub 附件 2 GB、Gitee 单文件 100 MB），只能走网盘；下载后请核对对应 Release 里公布的 SHA256。
+- 建议顺序：clone 源码 → 读 [项目详细记录与维护总览](docs/项目详细记录与维护总览.md) 和两个产品的 README → 先装 QQ 桥 → 再按需装声音包。两个包都先跑「环境检查.cmd」，再跑「安装配置.cmd」。
+- 源码仓不含模型和运行时；不下载离线包就得自己准备 Node/Python 与模型（模型来源见各包 `LICENSES.md`）。
+- 声音包可精简：不唱歌删 `models/vevo2`，不用备选 TTS 删 `models/qwen3-tts-1.7b-base`；`models/voxcpm2` 与 `runtime/` 不要删。
+
 ## 先看哪里
 
 - **完整说明入口：[项目详细记录与维护总览](docs/项目详细记录与维护总览.md)**。
